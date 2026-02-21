@@ -1,0 +1,24 @@
+import discord
+from discord.ext import commands
+import random
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix='$', intents=intents)
+
+bilgiler = [
+    "♻️ Geri dönüşüm yaparak çevreyi koruyabiliriz.",
+    "🚯 Yerlere çöp atmamalıyız.",
+    "🌳 Ağaç dikmek hava kirliliğini azaltır.",
+    "🚲 Kısa mesafelerde yürüyerek egzoz gazını azaltabiliriz.",
+    "💧 Su ve elektrik tasarrufu yapmalıyız.",
+    "🏭 Fabrikaların zararlı gazları filtrelemesi gerekir."
+]
+
+@bot.command()
+async def bilgi(ctx):
+    rastgele_bilgi = random.choice(bilgiler)
+    await ctx.send(rastgele_bilgi)
+
+bot.run("")
