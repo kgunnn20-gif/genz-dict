@@ -1,0 +1,57 @@
+import discord
+from discord.ext import commands
+import random
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(command_prefix="$", intents=intents)
+
+# Meme veritabanı
+memes = {
+    "animals": [
+        {"url": "https://i.imgur.com/animal1.jpg", "rarity": "common"},
+        {"url": "https://i.imgur.com/animal2.jpg", "rarity": "common"},
+        {"url": "https://i.imgur.com/animal_rare.jpg", "rarity": "rare"},
+    ],
+    "gaming": [
+        {"url": "https://i.imgur.com/game1.jpg", "rarity": "common"},
+        {"url": "https://i.imgur.com/game2.jpg", "rarity": "common"},
+        {"url": "https://i.imgur.com/game_rare.jpg", "rarity": "rare"},
+    ]
+}
+
+def get_random_meme(category):
+    category_memes = memes.get(category)
+
+    if not category_memes:
+        return None
+
+    weighted_list = []
+
+    for meme in category_memes:
+        if meme["rarity"] == "common":
+            weighted_list.extend([meme] * 5)   # common daha sık gelir
+        elif meme["rarity"] == "rare":
+            weighted_list.extend([meme] * 1)   # rare daha az gelir
+
+    return random.choice(weighted_list)
+
+@bot.command()
+async def meme(ctx, category: str):
+    meme_data = get_random_meme(category)
+
+    if meme_data is None:
+        await ctx.send("Geçerli kategori gir! (animals / gaming)")
+        return
+
+    if meme_data["rarity"] == "rare":
+        await ctx.send("✨ NADİR MEME ÇIKTI! ✨")
+
+    await ctx.send(meme_data["url"])
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} aktif!")
+
+bot.run("tokeni_buraya_yazın")
